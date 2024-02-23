@@ -1,25 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import Items from "./Items";
+import Item from "./Item";
 
 function App() {
+
+  const [items, setItems] = useState(() => [new Item('Boltba menni'), new Item('Kutyát etetni')]);
+  const [toggleConfirmation, setToggleConfirmation] = useState(false);
+  const [selectedItemToDelete, setSelectedItemToDelete] = useState<Item>();
+
+  function handleRemove(item: Item) {
+    setToggleConfirmation(true);
+    setSelectedItemToDelete(item);
+  }
+
+  function confirmDelete(){
+    const item = selectedItemToDelete;
+    const updatedItems = items.filter(it => it !== item);
+    setItems(updatedItems);
+    setToggleConfirmation(false);
+  }
+
+  function cancelDelete(){
+    setToggleConfirmation(false);
+  }
+
+  const handleCategories = (handle: string) => {
+    switch (handle) {
+      case 'food':
+          setItems()
+        break;
+        case 'pets':
+            break;
+        case 'household':
+            break;
+        case 'entertainment':
+            break;
+        case 'kids':
+            break;
+      default:
+        break;
+    }
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <h1>Categories and their items</h1>
+        <button onClick={() => handleCategories('food')}>Food</button>
+        <button onClick={() => handleCategories('pets')}>Pets</button>
+        <button onClick={() => handleCategories('household')}>Household</button>
+        <button onClick={() => handleCategories('entertainment')}>Entertainment</button>
+        <button onClick={() => handleCategories('kids')}>Kids' Toys</button>
+        {items.map((item, i) => (<Items key={i} item={item} onRemove={() => handleRemove(item)}/>))}
+        {toggleConfirmation ? <p>Confirmation</p> : null}
+        {toggleConfirmation ? <button onClick={confirmDelete}>✓</button> : null}
+        {toggleConfirmation ? <button onClick={cancelDelete}>ⓧ</button> : null}
+      </div>
   );
 }
 
